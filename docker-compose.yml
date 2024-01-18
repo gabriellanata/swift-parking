@@ -19,7 +19,7 @@ x-shared_environment: &shared_environment
   
 services:
   app:
-    image: swift-parking:latest
+    image: ghcr.io/gabriellanata/swift-parking:main
     build:
       context: .
     environment:
