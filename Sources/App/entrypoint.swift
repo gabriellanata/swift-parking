@@ -18,4 +18,9 @@ enum Entrypoint {
         }
         try await app.execute()
     }
+
+    // configures your application
+    public static func configure(_ app: Application) async throws {
+        routes(app)
+    }
 }
