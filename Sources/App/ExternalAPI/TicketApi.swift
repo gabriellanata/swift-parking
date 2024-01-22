@@ -1,6 +1,5 @@
 import Foundation
 import Vapor
-import AppKit
 
 struct Ticket: Content, Equatable {
     let citationNumber: String
