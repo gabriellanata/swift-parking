@@ -16,11 +16,15 @@ enum Entrypoint {
             app.logger.report(error: error)
             throw error
         }
+
         try await app.execute()
     }
 
-    // configures your application
     public static func configure(_ app: Application) async throws {
+        try await Storage.shared.initialize(app: app)
+        try await Security.shared.initialize()
+        try await Api.shared.initialize(client: app.client)
+        try await ParkingApi.shared.initialize()
         routes(app)
     }
 }
