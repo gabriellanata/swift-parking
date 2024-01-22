@@ -10,7 +10,7 @@ func routes(_ app: Application) {
             return try await ParkingApi.shared.getSessions(licensePlate: licensePlate)
         }
 
-        route.get("start") { req async throws in
+        route.post("start") { req async throws in
             guard let licensePlate = req.query[String.self, at: "licensePlate"],
                   let location = req.query[String.self, at: "location"],
                   let minutes = req.query[Int.self, at: "duration"] else

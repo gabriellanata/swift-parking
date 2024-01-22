@@ -15,14 +15,22 @@ extension ParkingApi {
             body: PaymentCardsRequest()
         ).as(PaymentCardsResponse.self)
 
-        self.cachedPaymentCards[user.username] = response.paymentCards
-        return response.paymentCards
+        let paymentCards = response.paymentCards.map { paymentCard in
+            PaymentCard(id: paymentCard.paymentAccountId, maskedCardNumber: paymentCard.maskedCardNumber)
+        }
+
+        self.cachedPaymentCards[user.username] = paymentCards
+        return paymentCards
     }
 }
 
 private struct PaymentCardsRequest: Content {}
 
 private struct PaymentCardsResponse: Content {
+    struct PaymentCard: Content, Equatable {
+        let paymentAccountId: String
+        let maskedCardNumber: String
+    }
+
     let paymentCards: [PaymentCard]
 }
-
