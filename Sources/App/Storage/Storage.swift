@@ -10,7 +10,7 @@ final class Storage {
     }
 
     private var app: Application!
-    private let basePath: String = Environment.process.STORAGE_PATH ?? ""
+    private let basePath: String = Environment.process.STORAGE_PATH ?? "./Data/"
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
@@ -46,7 +46,7 @@ final class Storage {
         let folderPath = self.basePath + path
         let fullPath = folderPath + file
         print("Writing file: \(fullPath)")
-        try? await self.createDirectory(at: folderPath).get()
+        try await self.createDirectory(at: folderPath).get()
         return try await self.writeFile(buffer, at: fullPath).get()
     }
 }
@@ -65,7 +65,7 @@ extension Storage {
     }
 
     fileprivate func createDirectory(at path: String) -> EventLoopFuture<Void> {
-        return self.io.createDirectory(path: path, withIntermediateDirectories: true, mode: 0,
+        return self.io.createDirectory(path: path, withIntermediateDirectories: true, mode: 1023,
                                        eventLoop: self.eventLoop())
     }
 
@@ -90,6 +90,7 @@ extension Storage {
         else {
             return self.eventLoop().makeFailedFuture(Abort(.internalServerError))
         }
+
         return self.read(
             path: path,
             fromOffset: 0,
