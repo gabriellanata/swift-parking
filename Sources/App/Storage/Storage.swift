@@ -43,6 +43,9 @@ final class Storage {
     }
 
     public func write(data buffer: ByteBuffer, to file: String, at path: String = "") async throws {
+        print("MAYBE1", FileManager.default.currentDirectoryPath)
+        print("MAYBE2", FileManager.default.temporaryDirectory)
+        print("MAYBE3", FileManager.default.homeDirectoryForCurrentUser)
         let folderPath = self.basePath + path
         let fullPath = folderPath + file
         print("Writing file: \(fullPath)")
