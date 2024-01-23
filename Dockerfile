@@ -83,6 +83,9 @@ USER vapor:vapor
 # Let Docker bind to port 8080
 EXPOSE 8080
 
+# Create data dir so that permissions are right
+RUN mkdir /app/data
+
 # Start the Vapor service when the image is run, default to listening on 8080 in production environment
 ENTRYPOINT ["./App"]
 CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
