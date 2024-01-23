@@ -46,7 +46,8 @@ final class Storage {
         let folderPath = self.basePath + path
         let fullPath = folderPath + file
         print("Writing file: \(fullPath)")
-        try await self.createDirectory(at: folderPath).get()
+//        try await self.createDirectory(at: folderPath).get()
+        try self.createDirectoryNew(at: folderPath)
         return try await self.writeFile(buffer, at: fullPath).get()
     }
 }
@@ -64,8 +65,15 @@ extension Storage {
         self.app.eventLoopGroup.next()
     }
 
+    fileprivate func createDirectoryNew(at path: String) throws {
+        print("Creating directory: \(path)")
+        try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+    }
+
     fileprivate func createDirectory(at path: String) -> EventLoopFuture<Void> {
-        return self.io.createDirectory(path: path, withIntermediateDirectories: true, mode: 420,
+        let mode = NIOFileHandle.Flags.defaultPermissions
+        print("Creating directory: \(path) [\(mode)]")
+        return self.io.createDirectory(path: path, withIntermediateDirectories: false, mode: mode,
                                        eventLoop: self.eventLoop())
     }
 
