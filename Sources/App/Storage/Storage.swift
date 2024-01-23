@@ -7,8 +7,6 @@ final class Storage {
 
     func initialize(app: Application) async throws {
         self.app = app
-        print("Read", UserDefaults.standard.string(forKey: "testing") ?? "None")
-        UserDefaults.standard.set("testing", forKey: "testing")
     }
 
     private var app: Application!
@@ -48,9 +46,7 @@ final class Storage {
         let folderPath = self.basePath + path
         let fullPath = folderPath + file
         print("Writing file: \(fullPath)")
-        //let url = URL(fileURLWithPath: folderPath)
-        //try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
-        // try await self.createDirectory(at: folderPath).get()
+        try? await self.createDirectory(at: folderPath).get()
         return try await self.writeFile(buffer, at: fullPath).get()
     }
 }
