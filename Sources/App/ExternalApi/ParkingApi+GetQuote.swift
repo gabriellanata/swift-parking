@@ -3,7 +3,7 @@ import Vapor
 extension ParkingApi {
     func getQuote(
         user: User,
-        vehicle: Vehicle, location: Location, duration: Duration
+        vehicle: Vehicle, locationId: String, duration: Duration
     ) async throws -> Quote
     {
         let auth = try await self.login(user: user)
@@ -15,9 +15,9 @@ extension ParkingApi {
             url: "https://consumer.paybyphoneapis.com/parking/accounts/\(accountNumber)/quote",
             auth: auth,
             query: [
-                "locationId": location.locationId,
+                "locationId": locationId,
                 "licensePlate": vehicle.licensePlate,
-                "rateOptionId": location.locationId,
+                "rateOptionId": locationId,
                 "durationTimeUnit": "Minutes",
                 "durationQuantity": "\(duration.minutes)",
                 "isParkUntil": "false",

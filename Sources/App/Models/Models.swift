@@ -51,12 +51,6 @@ struct Vehicle: Content, Equatable {
         self.jurisdiction = jurisdiction
         self.type = type
     }
-
-}
-
-struct Location: Content, Equatable {
-    let name: String
-    let locationId: String
 }
 
 struct Quote: Content, Equatable {
@@ -76,13 +70,11 @@ struct PaymentCard: Content, Equatable {
 }
 
 struct ParkingSession: Content, Equatable {
-    let id: String
+    let id: String?
     let locationId: String
     let startTime: String
     let expireTime: String
-    let isStoppable: Bool
-    let isExtendable: Bool
-    let isRenewable: Bool
-    let maxStayState: String
+    let isExtendable: Bool?
     let licensePlate: String
+    let username: String
 }

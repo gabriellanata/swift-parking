@@ -1,7 +1,9 @@
 import Vapor
 
 extension ParkingApi {
-    func createSession(user: User, quote: Quote, paymentCard: PaymentCard, duration: Duration) async throws {
+    func createSession(user: User, quote: Quote, paymentCard: PaymentCard, duration: Duration) 
+        async throws -> ParkingSession
+    {
         let auth = try await self.login(user: user)
 
         try await self.send(
@@ -25,6 +27,16 @@ extension ParkingApi {
                     )
                 )
             )
+        )
+
+        return ParkingSession(
+            id: nil,
+            locationId: quote.locationId,
+            startTime: quote.parkingStartTime,
+            expireTime: quote.parkingExpiryTime,
+            isExtendable: nil,
+            licensePlate: quote.licensePlate,
+            username: user.username
         )
     }
 }

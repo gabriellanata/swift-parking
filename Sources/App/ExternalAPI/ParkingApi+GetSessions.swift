@@ -30,11 +30,12 @@ extension ParkingApi {
                 locationId: $0.locationId,
                 startTime: $0.startTime,
                 expireTime: $0.expireTime,
-                isStoppable: $0.isStoppable,
+                //isStoppable: $0.isStoppable,
                 isExtendable: $0.isExtendable,
-                isRenewable: $0.isRenewable,
-                maxStayState: $0.maxStayState,
-                licensePlate: $0.vehicle.licensePlate
+                //isRenewable: $0.isRenewable,
+                //maxStayState: $0.maxStayState,
+                licensePlate: $0.vehicle.licensePlate,
+                username: user.username
             )
         }
     }

@@ -3,34 +3,35 @@ import Vapor
 func routes(_ app: Application) {
     app.group("session") { route in
         route.get { req async throws in
-            guard let licensePlate = req.query[String.self, at: "licensePlate"] else {
-                throw Abort(.badRequest)
+            struct RequestBody: Content {
+                let licensePlate: String
             }
 
-            return try await ParkingApi.shared.getSessions(licensePlate: licensePlate)
+            let requestBody = try req.content.decode(RequestBody.self)
+            return try await ParkingApi.shared.getSessions(licensePlate: requestBody.licensePlate)
         }
 
         route.post("start") { req async throws in
-            guard let licensePlate = req.query[String.self, at: "licensePlate"],
-                  let location = req.query[String.self, at: "location"],
-                  let minutes = req.query[Int.self, at: "duration"] else
-            {
-                throw Abort(.badRequest)
+            struct RequestBody: Content {
+                let licensePlate: String
+                let location: String
+                let minutes: Int
             }
 
-            let duration = Duration.minutes(Int64(minutes))
-            try await ParkingApi.shared.startSession(licensePlate: licensePlate,
-                                                     locationId: location,
-                                                     duration: duration)
-            return Response(status: .created)
+            let requestBody = try req.content.decode(RequestBody.self)
+            let duration = Duration.minutes(Int64(requestBody.minutes))
+            return try await ParkingApi.shared.startSession(licensePlate: requestBody.licensePlate,
+                                                            locationId: requestBody.location,
+                                                            duration: duration)
         }
 
         route.post("end") { req async throws in
-            guard let licensePlate = req.query[String.self, at: "licensePlate"] else {
-                throw Abort(.badRequest)
+            struct RequestBody: Content {
+                let licensePlate: String
             }
 
-            try await ParkingApi.shared.stopSession(licensePlate: licensePlate)
+            let requestBody = try req.content.decode(RequestBody.self)
+            try await ParkingApi.shared.stopSession(licensePlate: requestBody.licensePlate)
             return Response(status: .ok)
         }
     }
@@ -40,28 +41,35 @@ func routes(_ app: Application) {
             return await ParkingApi.shared.users.map { $0.asPrivate() }
         }
 
-        route.get("add") { req async throws in
-            guard let username = req.query[String.self, at: "username"],
-                  let password = req.query[String.self, at: "password"],
-                  let licensePlate = req.query[String.self, at: "licensePlate"] else
-            {
-                throw Abort(.badRequest)
+        route.post("add") { req async throws in
+            struct RequestBody: Content {
+                let username: String
+                let password: String
+                let licensePlate: String
             }
 
-            let response = try await ParkingApi.shared.addUser(username: username,
-                                                               password: password,
-                                                               licensePlate: licensePlate)
+            let requestBody = try req.content.decode(RequestBody.self)
+            let response = try await ParkingApi.shared.addUser(username: requestBody.username,
+                                                               password: requestBody.password,
+                                                               licensePlate: requestBody.licensePlate)
 
             return Response(status: .accepted, body: .init(string: response))
         }
 
-        route.get("remove") { req async throws in
-            if let username = req.query[String.self, at: "username"] {
+        route.post("remove") { req async throws in
+            struct RequestBody: Content {
+                let username: String?
+                let licensePlate: String?
+            }
+
+            let requestBody = try req.content.decode(RequestBody.self)
+
+            if let username = requestBody.username {
                 let response = try await ParkingApi.shared.removeUser(username: username)
                 return Response(status: .accepted, body: .init(string: response))
             }
 
-            if let licensePlate = req.query[String.self, at: "licensePlate"] {
+            if let licensePlate = requestBody.licensePlate {
                 let response = try await ParkingApi.shared.removeUsers(licensePlate: licensePlate)
                 return Response(status: .accepted, body: .init(string: response))
             }
@@ -75,7 +83,8 @@ func routes(_ app: Application) {
             throw Abort(.badRequest)
         }
 
-        return try await TicketApi.shared.checkForTickets(licensePlate: licensePlate)
+        let filter = req.query[Ticket.Filter.self, at: "filter"] ?? .unpaid
+        return try await TicketApi.shared.checkForTickets(licensePlate: licensePlate, filter: filter)
     }
 
     app.get("tick") { req async throws in

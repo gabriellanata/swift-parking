@@ -2,6 +2,12 @@ import Foundation
 import Vapor
 
 struct Ticket: Content, Equatable {
+    enum Filter: String, Decodable {
+        case unpaid
+        case paid
+        case all
+    }
+
     let citationNumber: String
     let issueDate: String
     let violationCode: String
@@ -48,7 +54,7 @@ actor TicketApi {
         "User-Agent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
     ]
 
-    func checkForTickets(licensePlate: String) async throws -> [Ticket] {
+    func checkForTickets(licensePlate: String, filter: Ticket.Filter = .unpaid) async throws -> [Ticket] {
         let rawResponse = try await Api.shared.send(
             method: .POST,
             url: "https://wmq.etimspayments.com/pbw/inputAction.doh",
@@ -146,8 +152,21 @@ actor TicketApi {
             }
         }
 
-        return citations
-    }
+        guard !citations.isEmpty else {
+            throw Abort(.internalServerError, reason: "No citations found")
+        }
 
+        return citations
+            .filter { ticket in
+                switch filter {
+                case .all:
+                    return true
+                case .paid:
+                    return !ticket.isUnpaid
+                case .unpaid:
+                    return ticket.isUnpaid
+                }
+            }
+    }
 }
 

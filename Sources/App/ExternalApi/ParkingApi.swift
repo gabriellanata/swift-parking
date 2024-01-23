@@ -31,6 +31,8 @@ actor ParkingApi {
 
     var users: [User] = []
 
+    var activeSessions: [ParkingSession] = []
+
     /// [username: Auth]
     var cachedAuths: [String: Auth] = [:]
 
