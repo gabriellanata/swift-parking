@@ -48,8 +48,8 @@ final class Storage {
         let folderPath = self.basePath + path
         let fullPath = folderPath + file
         print("Writing file: \(fullPath)")
-        let url = URL(fileURLWithPath: folderPath)
-        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        //let url = URL(fileURLWithPath: folderPath)
+        //try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         // try await self.createDirectory(at: folderPath).get()
         return try await self.writeFile(buffer, at: fullPath).get()
     }
