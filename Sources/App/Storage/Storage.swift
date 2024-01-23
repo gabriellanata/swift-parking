@@ -65,7 +65,7 @@ extension Storage {
     }
 
     fileprivate func createDirectory(at path: String) -> EventLoopFuture<Void> {
-        return self.io.createDirectory(path: path, withIntermediateDirectories: true, mode: 1023,
+        return self.io.createDirectory(path: path, withIntermediateDirectories: true, mode: 420,
                                        eventLoop: self.eventLoop())
     }
 
