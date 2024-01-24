@@ -66,7 +66,7 @@ actor ParkingApi {
         auth: Auth?,
         headers: HTTPHeaders = [:],
         query: (any Content)? = nil,
-        body: any Content
+        body: (any Content)? = nil
     )
         async throws -> ClientResponse
     {

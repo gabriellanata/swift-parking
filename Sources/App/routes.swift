@@ -3,12 +3,12 @@ import Vapor
 func routes(_ app: Application) {
     app.group("session") { route in
         route.get { req async throws in
-            struct RequestBody: Content {
+            struct RequestQuery: Content {
                 let licensePlate: LicensePlate
             }
 
-            let requestBody = try req.content.decode(RequestBody.self)
-            return try await ParkingApi.shared.getSessions(licensePlate: requestBody.licensePlate)
+            let requestQuery = try req.query.decode(RequestQuery.self)
+            return try await ParkingApi.shared.getSessions(licensePlate: requestQuery.licensePlate)
         }
 
         route.post("start") { req async throws in

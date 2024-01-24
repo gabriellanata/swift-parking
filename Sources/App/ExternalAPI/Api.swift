@@ -21,7 +21,7 @@ actor Api {
         
         let response = try await self.client.send(method, headers: headers, to: url) { req in
             if let query {
-                try req.content.encode(query)
+                try req.query.encode(query)
             }
 
             if let body {
