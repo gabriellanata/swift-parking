@@ -51,10 +51,3 @@ extension ParkingApi {
         }
     }
 }
-
-// 300s block: 37303004
-
-// User(username: "+14153238348", password: "RangerDanger88", vehicles: [
-//     Vehicle(licensePlate: "8TLE881")
-// ])
-

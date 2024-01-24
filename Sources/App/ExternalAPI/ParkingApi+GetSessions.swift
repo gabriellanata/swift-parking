@@ -46,7 +46,7 @@ private struct GetSessionsRequest: Content {}
 private typealias GetSessionsResponse = [GetSessionsResponseElement]
 private struct GetSessionsResponseElement: Content {
     struct SessionVehicle: Content {
-        let id: String
+        // let id: Int
         let licensePlate: LicensePlate
     }
 
