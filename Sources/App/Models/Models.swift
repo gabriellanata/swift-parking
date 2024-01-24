@@ -2,7 +2,7 @@ import Foundation
 import Vapor
 
 typealias LicensePlate = String
-typealias Location = Int
+typealias Location = String
 
 struct User: Content, Equatable {
     let username: String
