@@ -8,7 +8,7 @@ extension ParkingApi {
 
         var sessionExtension: (sessionId: String, duration: Duration)? = nil
         if let existingSession = existingSessions.first(where: { $0.locationId == locationId }) {
-            let durationExtensionSeconds = Int(existingSession.remainingTime() - duration.seconds)
+            let durationExtensionSeconds = Int(duration.seconds - existingSession.remainingTime())
             if durationExtensionSeconds > 0 {
                 sessionExtension = (
                     sessionId: existingSession.id!,
