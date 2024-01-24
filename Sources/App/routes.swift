@@ -15,11 +15,12 @@ func routes(_ app: Application) {
             struct RequestBody: Content {
                 let licensePlate: LicensePlate
                 let location: Location
-                let minutes: Int
+                let duration: Int
             }
 
             let requestBody = try req.content.decode(RequestBody.self)
-            let duration = Duration.minutes(Int64(requestBody.minutes))
+
+            let duration = Duration.minutes(Int64(requestBody.duration))
             return try await ParkingApi.shared.startSession(licensePlate: requestBody.licensePlate,
                                                             locationId: requestBody.location,
                                                             duration: duration)

@@ -80,4 +80,28 @@ struct ParkingSession: Content, Equatable {
     let isExtendable: Bool?
     let licensePlate: LicensePlate
     let username: String
+
+    var startDate: Date {
+        return ISO8601DateFormatter().date(from: self.startTime)!
+    }
+
+    var expireDate: Date {
+        return ISO8601DateFormatter().date(from: self.expireTime)!
+    }
+
+    func remainingTime() -> TimeInterval {
+        return max(self.expireDate.timeIntervalSinceNow, 0)
+    }
+}
+
+struct AutomatedParkingSession: Content, Equatable {
+    let locationId: Location
+    let startDate: Date
+    let expireDate: Date
+    let licensePlate: LicensePlate
+    let username: String
+
+    func remainingTime() -> TimeInterval {
+        return max(self.expireDate.timeIntervalSinceNow, 0)
+    }
 }

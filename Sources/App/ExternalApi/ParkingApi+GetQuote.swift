@@ -40,20 +40,22 @@ extension ParkingApi {
     }
 
     func getQuoteExtend(
-        user: User, accountNumber: String,
-        parkingSessionId: String, duration: Duration
+        user: User,
+        sessionId: String, duration: Duration // Duration is added time
     ) async throws -> Quote
     {
         guard let auth = self.activeAuth(forUser: user) else {
             throw Abort(.unauthorized)
         }
 
+        let accountNumber = try await self.getAccountNumber(user: user)
+
         let response = try await self.send(
             method: .GET,
             url: "https://consumer.paybyphoneapis.com/parking/accounts/\(accountNumber)/quote",
             auth: auth,
             query: [
-                "parkingSessionId": parkingSessionId,
+                "parkingSessionId": sessionId,
                 "durationTimeUnit": "Minutes",
                 "durationQuantity": "\(duration.minutes)",
                 "isParkUntil": "false",

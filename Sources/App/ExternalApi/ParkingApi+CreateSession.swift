@@ -1,7 +1,7 @@
 import Vapor
 
 extension ParkingApi {
-    func createSession(user: User, quote: Quote, paymentCard: PaymentCard, duration: Duration) 
+    func createSession(user: User, quote: Quote, paymentCard: PaymentCard, duration: Duration)
         async throws -> ParkingSession
     {
         let auth = try await self.login(user: user)
@@ -39,6 +39,40 @@ extension ParkingApi {
             username: user.username
         )
     }
+
+    func extendSession(user: User, quote: Quote, sessionId: String, paymentCard: PaymentCard, duration: Duration)
+        async throws -> ParkingSession
+    {
+        let auth = try await self.login(user: user)
+
+        try await self.send(
+            method: .PUT,
+            url: "https://consumer.paybyphoneapis.com/parking/accounts/\(quote.parkingAccountId)/sessions/\(sessionId)",
+            auth: auth,
+            body: ExtendSessionRequest(
+                duration: SessionDuration(quantity: "\(duration.minutes)", timeUnit: "Minutes"),
+                quoteId: quote.id,
+                expireTime: JSONNull(),
+                paymentMethod: PaymentMethod(
+                    paymentMethodType: "PaymentAccount",
+                    payload: Payload(
+                        paymentAccountId: paymentCard.id,
+                        clientBrowserDetails: .default
+                    )
+                )
+            )
+        )
+
+        return ParkingSession(
+            id: nil,
+            locationId: quote.locationId,
+            startTime: quote.parkingStartTime,
+            expireTime: quote.parkingExpiryTime,
+            isExtendable: nil,
+            licensePlate: quote.licensePlate,
+            username: user.username
+        )
+    }
 }
 
 private struct CreateSessionRequest: Content {
@@ -49,6 +83,13 @@ private struct CreateSessionRequest: Content {
     let locationId: Location
     let quoteId: String
     let startTime: String
+    let expireTime: JSONNull
+    let paymentMethod: PaymentMethod
+}
+
+private struct ExtendSessionRequest: Content {
+    let duration: SessionDuration
+    let quoteId: String
     let expireTime: JSONNull
     let paymentMethod: PaymentMethod
 }

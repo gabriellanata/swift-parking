@@ -1,7 +1,7 @@
 import Vapor
 
 extension ParkingApi {
-    func getSessions(licensePlate: String) async throws -> [ParkingSession] {
+    func getSessions(licensePlate: LicensePlate) async throws -> [ParkingSession] {
         guard let vehicle = self.vehicle(forLicensePlate: licensePlate) else {
             throw Abort(.custom(code: 601, reasonPhrase: "Vehicle not found for: \(licensePlate)"))
         }

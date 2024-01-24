@@ -67,3 +67,9 @@ extension Sequence {
         return try await self.mapAsync(transform).flatMap { $0 }
     }
 }
+
+extension Duration {
+    var seconds: TimeInterval {
+        TimeInterval(self.components.seconds)
+    }
+}
