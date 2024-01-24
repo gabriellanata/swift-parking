@@ -4,7 +4,7 @@ func routes(_ app: Application) {
     app.group("session") { route in
         route.get { req async throws in
             struct RequestBody: Content {
-                let licensePlate: String
+                let licensePlate: LicensePlate
             }
 
             let requestBody = try req.content.decode(RequestBody.self)
@@ -13,8 +13,8 @@ func routes(_ app: Application) {
 
         route.post("start") { req async throws in
             struct RequestBody: Content {
-                let licensePlate: String
-                let location: String
+                let licensePlate: LicensePlate
+                let location: Location
                 let minutes: Int
             }
 
@@ -27,7 +27,7 @@ func routes(_ app: Application) {
 
         route.post("end") { req async throws in
             struct RequestBody: Content {
-                let licensePlate: String
+                let licensePlate: LicensePlate
             }
 
             let requestBody = try req.content.decode(RequestBody.self)
@@ -45,7 +45,7 @@ func routes(_ app: Application) {
             struct RequestBody: Content {
                 let username: String
                 let password: String
-                let licensePlate: String
+                let licensePlate: LicensePlate
             }
 
             let requestBody = try req.content.decode(RequestBody.self)
@@ -59,7 +59,7 @@ func routes(_ app: Application) {
         route.post("remove") { req async throws in
             struct RequestBody: Content {
                 let username: String?
-                let licensePlate: String?
+                let licensePlate: LicensePlate?
             }
 
             let requestBody = try req.content.decode(RequestBody.self)

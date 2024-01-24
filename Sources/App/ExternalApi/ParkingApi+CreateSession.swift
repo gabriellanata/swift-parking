@@ -43,10 +43,10 @@ extension ParkingApi {
 
 private struct CreateSessionRequest: Content {
     let parkingAccountId: String
-    let licensePlate: String
-    let rateOptionId: String
+    let licensePlate: LicensePlate
+    let rateOptionId: Location
     let duration: SessionDuration
-    let locationId: String
+    let locationId: Location
     let quoteId: String
     let startTime: String
     let expireTime: JSONNull

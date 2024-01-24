@@ -1,7 +1,5 @@
 import Vapor
 
-typealias URLQuery = [String: String]
-
 actor Api {
     public static let shared = Api()
 
@@ -15,14 +13,17 @@ actor Api {
         method: HTTPMethod,
         url: URI,
         headers: HTTPHeaders = [:],
-        query: URLQuery = [:],
+        query: (any Content)? = nil,
         body: (any Content)? = nil
     )
         async throws -> ClientResponse
     {
         
         let response = try await self.client.send(method, headers: headers, to: url) { req in
-            try req.query.encode(query)
+            if let query {
+                try req.content.encode(query)
+            }
+
             if let body {
                 try req.content.encode(body, as: headers.contentType ?? .json)
             }

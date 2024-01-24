@@ -42,7 +42,7 @@ actor ParkingApi {
     /// [username: [PaymentCard]]
     var cachedPaymentCards: [String: [PaymentCard]] = [:]
 
-    func vehicle(forLicensePlate licensePlate: String) -> Vehicle? {
+    func vehicle(forLicensePlate licensePlate: LicensePlate) -> Vehicle? {
         return self.users.compactMap { $0.vehicles.first { $0.licensePlate == licensePlate } }.first
     }
 
@@ -65,7 +65,7 @@ actor ParkingApi {
         url: URI,
         auth: Auth?,
         headers: HTTPHeaders = [:],
-        query: URLQuery = [:],
+        query: (any Content)? = nil,
         body: any Content
     )
         async throws -> ClientResponse

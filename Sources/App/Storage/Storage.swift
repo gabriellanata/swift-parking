@@ -71,7 +71,11 @@ extension Storage {
     }
 
     fileprivate func createDirectory(at path: String) -> EventLoopFuture<Void> {
+#if os(Linux)
         let mode = NIOFileHandle.Flags.defaultPermissions
+#else
+        let mode = NIOPOSIXFileMode(1023)
+#endif
         print("Creating directory: \(path) [\(mode)]")
         return self.io.createDirectory(path: path, withIntermediateDirectories: false, mode: mode,
                                        eventLoop: self.eventLoop())

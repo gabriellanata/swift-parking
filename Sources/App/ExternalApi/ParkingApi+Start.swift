@@ -1,7 +1,7 @@
 import Vapor
 
 extension ParkingApi {
-    func startSession(licensePlate: String, locationId: String, duration: Duration) 
+    func startSession(licensePlate: LicensePlate, locationId: Location, duration: Duration)
         async throws -> ParkingSession
     {
         guard let vehicle = self.vehicle(forLicensePlate: licensePlate) else {
@@ -21,7 +21,7 @@ extension ParkingApi {
         return try await self.createSession(user: user, quote: quote, paymentCard: paymentCard, duration: duration)
     }
 
-    func stopSession(licensePlate: String) async throws {
+    func stopSession(licensePlate: LicensePlate) async throws {
 
     }
 }

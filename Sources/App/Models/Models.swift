@@ -1,6 +1,9 @@
 import Foundation
 import Vapor
 
+typealias LicensePlate = String
+typealias Location = Int
+
 struct User: Content, Equatable {
     let username: String
     let password: String
@@ -36,7 +39,7 @@ struct Auth: Content, Equatable {
 struct Vehicle: Content, Equatable {
     let id: String?
     let legacyId: String?
-    let licensePlate: String
+    let licensePlate: LicensePlate
     let country: String?
     let jurisdiction: String?
     let type: String?
@@ -55,13 +58,13 @@ struct Vehicle: Content, Equatable {
 
 struct Quote: Content, Equatable {
     let id: String
-    let locationId: String
+    let locationId: Location
     let quoteDate: String
     let cost: Decimal
     let parkingAccountId: String
     let parkingStartTime: String
     let parkingExpiryTime: String
-    let licensePlate: String
+    let licensePlate: LicensePlate
 }
 
 struct PaymentCard: Content, Equatable {
@@ -71,10 +74,10 @@ struct PaymentCard: Content, Equatable {
 
 struct ParkingSession: Content, Equatable {
     let id: String?
-    let locationId: String
+    let locationId: Location
     let startTime: String
     let expireTime: String
     let isExtendable: Bool?
-    let licensePlate: String
+    let licensePlate: LicensePlate
     let username: String
 }

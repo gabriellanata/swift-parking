@@ -47,11 +47,11 @@ private typealias GetSessionsResponse = [GetSessionsResponseElement]
 private struct GetSessionsResponseElement: Content {
     struct SessionVehicle: Content {
         let id: String
-        let licensePlate: String
+        let licensePlate: LicensePlate
     }
 
     let parkingSessionId: String
-    let locationId: String
+    let locationId: Location
     let startTime: String
     let stall: String?
     let expireTime: String

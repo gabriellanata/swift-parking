@@ -3,7 +3,7 @@ import Vapor
 extension ParkingApi {
     func getQuote(
         user: User,
-        vehicle: Vehicle, locationId: String, duration: Duration
+        vehicle: Vehicle, locationId: Location, duration: Duration
     ) async throws -> Quote
     {
         let auth = try await self.login(user: user)
@@ -15,9 +15,9 @@ extension ParkingApi {
             url: "https://consumer.paybyphoneapis.com/parking/accounts/\(accountNumber)/quote",
             auth: auth,
             query: [
-                "locationId": locationId,
+                "locationId": "\(locationId)",
                 "licensePlate": vehicle.licensePlate,
-                "rateOptionId": locationId,
+                "rateOptionId": "\(locationId)",
                 "durationTimeUnit": "Minutes",
                 "durationQuantity": "\(duration.minutes)",
                 "isParkUntil": "false",
@@ -80,7 +80,7 @@ private struct GetQuoteRequest: Content {
 }
 
 private struct GetQuoteResponse: Content {
-    let locationId: String
+    let locationId: Location
     let stall: String?
     let quoteDate: String
     let totalCost: Money
@@ -88,7 +88,7 @@ private struct GetQuoteResponse: Content {
     let parkingStartTime: String
     let parkingExpiryTime: String
     let parkingDurationAdjustment: String
-    let licensePlate: String
+    let licensePlate: LicensePlate
     let quoteId: String
 }
 
