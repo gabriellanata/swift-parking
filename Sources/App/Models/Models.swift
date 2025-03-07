@@ -101,7 +101,7 @@ struct AutomatedParkingSession: Content, Equatable {
     let licensePlate: LicensePlate
     let username: String
 
-    func remainingTime() -> TimeInterval {
-        return max(self.expireDate.timeIntervalSinceNow, 0)
+    func remainingTime() -> Int {
+        return Int(max(self.expireDate.timeIntervalSinceNow, 0))
     }
 }

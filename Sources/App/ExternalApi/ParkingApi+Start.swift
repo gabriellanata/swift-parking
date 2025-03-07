@@ -67,18 +67,52 @@ extension ParkingApi {
         }
     }
 
-//    func startAutomatedSession(
-//        licensePlate: LicensePlate,
-//        locationId: Location,
-//        duration: Duration
-//    )
-//        async throws
-//    {
-//        let session = try await self.startSession(licensePlate: licensePlate, locationId: locationId, duration: duration)
-//        self.activeSessions[session.id!] = session
-//    }
+    func startAutomatedSession(
+        licensePlate: LicensePlate,
+        locationId: Location,
+        duration: Duration
+    )
+        async throws -> AutomatedParkingSession
+    {
+        let session = try await self.startSession(licensePlate: licensePlate, locationId: locationId, duration: duration)
 
-    func stopSession(licensePlate: LicensePlate) async throws {
+        let automatedSession = AutomatedParkingSession(
+            locationId: session.locationId,
+            startDate: session.startDate,
+            expireDate: session.expireDate,
+            licensePlate: session.licensePlate,
+            username: session.username
+        )
 
+        self.activeAutomatedSessions.append(automatedSession)
+
+        return automatedSession
+    }
+
+    func extendAutomatedSessions() async throws {
+        for automatedSession in self.activeAutomatedSessions {
+            let licensePlate = automatedSession.licensePlate
+            let remainingFullDuration = automatedSession.remainingTime()
+            guard remainingFullDuration > 0 else {
+                try await self.stopAutomatedSession(licensePlate: licensePlate)
+                continue
+            }
+
+            let existingSessions = try await self.getSessions(licensePlate: licensePlate)
+
+
+            let session = try await self.startSession(
+                licensePlate: automatedSession.licensePlate,
+                locationId: automatedSession.locationId,
+                duration: .seconds(Int(remainingFullDuration))
+            )
+
+            automatedSession.startDate = session.startDate
+            automatedSession.expireDate = session.expireDate
+        }
+    }
+
+    func stopAutomatedSession(licensePlate: LicensePlate) async throws {
+        self.activeAutomatedSessions.removeAll(where: { $0.licensePlate == licensePlate })
     }
 }
